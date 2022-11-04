@@ -1,72 +1,74 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { tema } from "src/tema/entities/tema.entities";
 import { DeleteResult, ILike, Repository } from "typeorm";
+import { Tema } from "../entities/tema.entity";
 
 @Injectable()
-export class temaService {
+export class TemaService{
     constructor(
-@InjectRepository(tema)
-private temaRepository: Repository<tema>
-     ) { }
+        @InjectRepository(Tema)
+        private TemaRepository: Repository<Tema>
+    ){}
 
-     
-async findAll(): Promise<tema[]> {
-return await this.temaRepository.find({
-    relations: {
-    postagem: true
-}
-}) 
-}
-     
-     
-async findById(id: number): Promise<tema> {
-let tema = await this.temaRepository.findOne({
-    where: {
-    id
-},
-  relations: {
-  postagem: true
-}
-})
-     
-if (!tema)
-throw new HttpException('Tema não existe', HttpStatus.NOT_FOUND)
-     
-return tema
-}
-     
-async findByDescricao(descricao: string): Promise<tema[]> {
-    return await this.temaRepository.find({
-    where: {
-    descricao: ILike(`%${descricao}%`)
-},
-    relations: {
-    postagem: true
-                 }
-             })
-         }
-async create(tema: tema): Promise<tema> {
-    return await this.temaRepository.save(tema)
-         }
-     
-async update(tema: tema): Promise<tema> {
-let buscarTema= await this.findById(tema.id)
-     
-if (!buscarTema || !buscarTema.id)
-throw new HttpException('Tema Não Existe', HttpStatus.NOT_FOUND)
-     
-return await this.temaRepository.save(tema)
-}
-     
-async delete(id: number): Promise<DeleteResult> {
-    let buscarTema = await this.findById(id)
-     
-    if (!buscarTema)
-    throw new HttpException('Tema não encontrada', HttpStatus.NOT_FOUND)
-     
-    return await this.temaRepository.delete(id)
+//Consultar toda as linhas da tabela
+    async findAll(): Promise<Tema[]>{
+        return await this.TemaRepository.find({
+            relations: {
+                postagem: true
+            }
+        })
+    }
 
+//Cosultar ID da tabela
+    async findById(id: number): Promise<Tema> {
+        let tema = await this.TemaRepository.findOne({
+            where: {
+                id
+            },
+            relations: {
+                postagem: true
+            }
+        })
+        if (!tema)
+            throw new HttpException('Tema não existe',HttpStatus.NOT_FOUND)
 
-} 
+            return tema
+    }
+
+//Consultar Descrição da tabela
+    async findByDescricao(descricao: string): Promise<Tema>{
+        return await this.TemaRepository.findOne({
+            where: {
+                descricao: ILike(`%${descricao}%`)
+            },
+            relations: {
+                postagem: true
+            }
+        })
+    }
+
+//Criar linha
+    async create(tema: Tema): Promise<Tema>{
+        return this.TemaRepository.save(tema)
+    }
+
+//atualizar linha 
+    async update(tema: Tema): Promise<Tema>{
+        let buscarTema = await this.findById(tema.id)
+
+        if(!buscarTema || !tema.id)
+        throw new HttpException('Tema Não Existe',HttpStatus.NOT_FOUND)
+
+        return await this.TemaRepository.save(tema)
+    }
+
+//Deletar linha 
+    async delete(id: number): Promise<DeleteResult>{
+        let buscarPostagem = await this.findById(id)
+
+        if(!buscarPostagem)
+            throw new HttpException('Tema não encontrada', HttpStatus.NOT_FOUND)
+
+            return await this.TemaRepository.delete(id)
+    }    
 }
