@@ -18,7 +18,7 @@ describe('Teste de Módulos Usuario e Auth (e2e)', () => {
         port: 3306,
         username: 'root',
         password: 'root',
-        database: 'db_blogpessoalq1',
+        database: 'db_blogpessoal1_test',
         autoLoadEntities: true,
         synchronize: true,
         logging: false,
