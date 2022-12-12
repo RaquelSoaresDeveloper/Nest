@@ -23,10 +23,6 @@ import { Usuario } from "../../usuario/entities/usuario.entity";
         @Column({length: 1000, nullable: false})
         texto: string
 
-        @ApiProperty()
-        @UpdateDateColumn()
-        data: Date
-
         @ApiProperty({ type: () => Tema})
         @ManyToOne (() => Tema, (tema) => tema.postagem, {
             onDelete: "CASCADE"
